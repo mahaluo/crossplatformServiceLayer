@@ -1,0 +1,19 @@
+{
+  "name": "service-layer",
+  "version": "1.0.0",
+  "description": "service layer for final app",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase": "^7.14.6",
+    "moment": "^2.26.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "max haggqvist",
+  "license": "ISC"
+}

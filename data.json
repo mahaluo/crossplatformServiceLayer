@@ -1,0 +1,45 @@
+{
+    "true_story": [
+        {
+            "img": "jimie.jpg",
+            "title": "Jimie Oliver",
+            "text": "Description Text"
+        },
+        {
+            "img": "nocover.png",
+            "title": "O J Simpson",
+            "text": "Description Text"
+        }
+    ],
+    "crime": [
+        {
+            "img": "nocover.png",
+            "title": "Last Minitue",
+            "text": "Description Text"
+        }
+    ],
+    "biographic": [
+        {
+            "img": "snowden.jpg",
+            "title": "Perment Record",
+            "text": "Description Text"
+        },
+        {
+            "img": "nocover.png",
+            "title": "Becoming Obama",
+            "text": "Description Text"
+        }
+    ],
+    "textBook": [
+        {
+            "img": "hacking.jpg",
+            "title": "Hacking Text book",
+            "text": "Description Text"
+        },
+        {
+            "img": "nocover.png",
+            "title": "C++",
+            "text": "Description Text"
+        }
+    ]
+}
