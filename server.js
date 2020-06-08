@@ -66,8 +66,6 @@ app.get("/public-projects", cors(), (req, res) => {
 
 })
 
-
-
 app.get("/user-projects", cors(), (req, res) => {
 
   console.log('fetching users projects from firebase.. ')
@@ -172,23 +170,11 @@ app.get("/auth-user", cors(), (req, res) => {
     })
     .catch(function (error) {
       console.log(error);
-      res.send(
-        error= {
-          error: {
-            error: reason
-          }
-        }
-      )
+      res.send({error: error})
     });
   } catch (error) {
     console.log(error);
-    res.send(
-      error= {
-        error: {
-          error: reason
-        }
-      }
-    )
+    res.send({error: error})
   }
 })
 
