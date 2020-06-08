@@ -35,43 +35,37 @@ app.get("/public-projects", cors(), (req, res) => {
   console.log('fetching public projects from firebase.. ')
   const projectList = [];
   try {
-    getProjects();    
+    getProjects();
   }
   catch(error) {
     console.error(error);
   }
 
   async function getProjects() {
-    const data = await firebase
-    .firestore()
-    .collection('publicProjects')
-    .doc('projectList')
-    .collection('projects')      
-    .get().catch(function(error) {             
-      console.error('failed:', error);
-      throw error;
+    console.log('async init')
+   
+    let publicRef = firebase.firestore().collection('projectList');
+    let query = publicRef.where('shared', '==', true).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching documents.');
+        return;
+      }  
+
+      snapshot.forEach(doc => {
+        console.log(doc.id, '=>', doc.data());
+
+      });
     })
-
-    data.forEach((doc) => {
-
-      const project = {
-        project: {
-        title: doc.data().title,
-        body: doc.data().body,
-        createdAt: moment(doc.data().createdAt.toDate()).calendar(),
-        solved: doc.data().solved,
-        id: doc.id   
-        }
-      }
-      
-      projectList.push(project);
+    .catch(err => {
+      console.log('Error getting documents', err);
     });
-      
-    console.log('sending list of projects to client.. ')
-    res.send(projectList);
-  }    
+    
+  }
+
 
 })
+
 
 
 app.get("/user-projects", cors(), (req, res) => {
@@ -88,9 +82,9 @@ app.get("/user-projects", cors(), (req, res) => {
   async function getProjects() {
     const data = await firebase
     .firestore()
-    .collection(req.headers.userid)
-    .doc('projectList')
-    .collection('projects')      
+    .collection('projectList')
+    .doc('projects')
+    .collection(req.headers.user)  
     .get().catch(function(error) {             
       console.error('failed:', error);
       throw error;
@@ -113,10 +107,10 @@ app.get("/user-projects", cors(), (req, res) => {
     });
 
     console.log('sending list of projects to client.. ')
+    
     res.send(projectList);
   }    
 })
-
 
 app.get("/project-comments", cors(), (req, res) => {
   console.log('fetching project comments from firebase.. ')
@@ -132,10 +126,10 @@ app.get("/project-comments", cors(), (req, res) => {
   async function getComments() {
     const data = await firebase
     .firestore()
-    .collection(req.headers.userid)
-    .doc('projectList')
-    .collection('projects')
-    .doc(req.headers.projectid)
+    .collection('projectList')
+    .doc('projects')
+    .collection(req.headers.user)
+    .doc(req.headers.id)
     .collection('comments')      
     .get().catch(function(error) {             
       console.error('failed:', error);
@@ -161,6 +155,41 @@ app.get("/project-comments", cors(), (req, res) => {
 
 
 
+})
+
+
+
+app.get("/auth-user", cors(), (req, res) => {
+  console.log('signing in user.. ');
+  console.log(req.headers.email, req.headers.password)
+  try {
+    firebase
+    .auth()
+    .signInWithEmailAndPassword(req.headers.email, req.headers.password)
+    .then(function (user) {
+      console.log('user: ' + JSON.stringify(user.user.uid) + ' signed in.. ');
+      res.send(JSON.stringify(user.user.uid));
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(
+        error= {
+          error: {
+            error: reason
+          }
+        }
+      )
+    });
+  } catch (error) {
+    console.log(error);
+    res.send(
+      error= {
+        error: {
+          error: reason
+        }
+      }
+    )
+  }
 })
 
 if (!module.parent) {
