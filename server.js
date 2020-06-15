@@ -159,7 +159,7 @@ app.get("/toggle-project", cors(), (req, res) => {
   let state = false;
 
   //toggle boolean state
-  if(req.headers.boolean === 'false') {
+  if (req.headers.boolean === 'false') {
     state = true;
   }
 
@@ -172,43 +172,43 @@ app.get("/toggle-project", cors(), (req, res) => {
   async function toggle() {
     if (req.headers.sender === 'solved') {
       firebase
-      .firestore()
-      .collection("projectList")
-      .doc("projects")
-      .collection('users')
-      .doc(req.headers.user)
-      .collection('userproject')
-      .doc(req.headers.id)
-      .update({ 'solved': state })
-      .then(() => {
-        console.log("toggled project solved to: " + state);
-      })
-      .catch((err) => {
-        console.log(err);
-        res.send({ error: err });
-      }).then(() => {
-        res.send({ success: 'success' });
-      });
+        .firestore()
+        .collection("projectList")
+        .doc("projects")
+        .collection('users')
+        .doc(req.headers.user)
+        .collection('userproject')
+        .doc(req.headers.id)
+        .update({ 'solved': state })
+        .then(() => {
+          console.log("toggled project solved to: " + state);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send({ error: err });
+        }).then(() => {
+          res.send({ success: 'success' });
+        });
     }
     else {
       firebase
-      .firestore()
-      .collection("projectList")
-      .doc("projects")
-      .collection('users')
-      .doc(req.headers.user)
-      .collection('userproject')
-      .doc(req.headers.id)
-      .update({ 'shared': state })
-      .then(() => {
-        console.log("toggled project shared to: " + state);
-      })
-      .catch((err) => {
-        console.log(err);
-        res.send({ error: err });
-      }).then(() => {
-        res.send({ success: 'success' });
-      });
+        .firestore()
+        .collection("projectList")
+        .doc("projects")
+        .collection('users')
+        .doc(req.headers.user)
+        .collection('userproject')
+        .doc(req.headers.id)
+        .update({ 'shared': state })
+        .then(() => {
+          console.log("toggled project shared to: " + state);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send({ error: err });
+        }).then(() => {
+          res.send({ success: 'success' });
+        });
     }
   }
 })
@@ -279,6 +279,47 @@ app.get("/auth-user", cors(), (req, res) => {
     console.log(error);
     res.send({ error: error })
   }
+})
+
+app.get("/create-project", cors(), (req, res) => {
+  console.log('creating new project.. ');
+  console.log(req.headers.title);
+
+  const project = {
+    user: req.headers.user,
+    title: req.headers.title,
+    body: req.headers.body,
+    createdAt: new Date(),
+    solved: false,
+    shared: false,
+  }
+  try {
+    firebase
+    .firestore()
+    .collection("projectList")
+    .doc("projects")
+    .collection('users')
+    .doc(req.headers.user)
+    .collection('userproject')
+    .add({
+      ...project,
+    })
+    .then(() => {
+      console.log("created project");
+      res.send(JSON.stringify(req.headers.user));
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({ error: error })
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({ error: error })
+  }
+ 
+
+
+
 })
 
 app.get("/post-comment", cors(), (req, res) => {
