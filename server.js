@@ -295,32 +295,53 @@ app.get("/create-project", cors(), (req, res) => {
   }
   try {
     firebase
-    .firestore()
-    .collection("projectList")
-    .doc("projects")
-    .collection('users')
-    .doc(req.headers.user)
-    .collection('userproject')
-    .add({
-      ...project,
-    })
-    .then(() => {
-      console.log("created project");
-      res.send(JSON.stringify(req.headers.user));
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send({ error: error })
-    });
+      .firestore()
+      .collection("projectList")
+      .doc("projects")
+      .collection('users')
+      .doc(req.headers.user)
+      .collection('userproject')
+      .add({
+        ...project,
+      })
+      .then(() => {
+        console.log("created project");
+        res.send(JSON.stringify(req.headers.user));
+      })
+      .catch((err) => {
+        console.log(err);
+        res.send({ error: error })
+      });
   } catch (error) {
     console.log(error);
     res.send({ error: error })
   }
- 
-
-
-
 })
+
+app.post("/delete-project", cors(), (req, res) => {
+  console.log('deleting project');
+
+  try {
+    firebase
+      .firestore()
+      .collection("projectList")
+      .doc("projects")
+      .collection("users")
+      .doc(req.headers.user)
+      .collection("userproject")
+      .doc(req.headers.id)
+      .delete()
+      .then(() => {
+        console.log("deleted project " + req.headers.id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 
 app.get("/post-comment", cors(), (req, res) => {
   console.log('adding comment to project: ' + req.headers.id);
